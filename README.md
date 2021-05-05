@@ -32,18 +32,28 @@ Things you may want to cover:
 
 ### 2. Questions
 #### a. Niveau facile
-- Quel est le nombre total d'objets `Album` contenus dans la base (sans regarder les id bien sûr) ? => `tp Album.count`
+- Quel est le nombre total d'objets `Album` contenus dans la base (sans regarder les id bien sûr) ? => `Album.count`
 - Qui est l'auteur de la chanson "White Room" ? => `tp Track.select(:artist).find_by(title:'White Room')`
-- Quelle chanson dure exactement 188133 milliseconds ? => ``
-- Quel groupe a sorti l'album "Use Your Illusion II" ? => ``
+- Quelle chanson dure exactement 188133 milliseconds ? => `tp Track.select(:title).find_by(duration:'188133')`
+- Quel groupe a sorti l'album "Use Your Illusion II" ? => `tp Album.select(:artist).find_by(title:'Use Your Illusion II')`
 #### b. Niveau Moyen
-- Combien y a t'il d'albums dont le titre contient "Great" ? (indice) => ``
-- Supprime tous les albums dont le nom contient "music". => ``
-- Combien y a t'il d'albums écrits par AC/DC ? => ``
-- Combien de chanson durent exactement 158589 millisecondes ? => ``
+- Combien y a t'il d'albums dont le titre contient "Great" ? => `Album.where('title like ?', '%Great%').count`
+- Supprime tous les albums dont le nom contient "music". => `tp Album.where('title like ?','%music%').destroy_all`
+- Combien y a t'il d'albums écrits par AC/DC ? => `Album.select(:title).where('artist like ?','%AC/DC%').count`
+- Combien de chanson durent exactement 158589 millisecondes ? => `Track.select(:title).where('duration like ?', '158589').count`
 #### c. Niveau Difficile
-- puts en console tous les titres de AC/DC. => ``
-- puts en console tous les titres de l'album "Let There Be Rock". => ``
-- Calcule le prix total de cet album ainsi que sa durée totale. => ``
-- Calcule le coût de l'intégralité de la discographie de "Deep Purple". => ``
-- Modifie (via une boucle) tous les titres de "Eric Clapton" afin qu'ils soient affichés avec "Britney Spears" en artist. => ``
+Effectuer des _boucles_ dans la console Rails
+- `puts` en console tous les titres de AC/DC.
+  - => `Track.where('artist like ?','AC/DC').each do |t|
+    puts t.title
+end`
+- `puts` en console tous les titres de l'album "Let There Be Rock".
+  - => `Track.where(artist:'AC/DC', album:'Let There Be Rock').find_each do |t|
+    puts t.title
+end`
+- Calcule le prix total de cet album ainsi que sa durée totale.
+  - => `Track.where(artist:'AC/DC', album:'Let There Be Rock').pluck("SUM(price), SUM(duration)")`
+- Calcule le coût de l'intégralité de la discographie de "Deep Purple".
+  - => `Track.where(artist:'Deep Purple').pluck("SUM(price)")`
+- Modifie (via une _boucle_) tous les titres de "Eric Clapton" afin qu'ils soient affichés avec "Britney Spears" en artist.
+  - => `Track.where(artist:'Eric Clapton').update_all("artist = 'Britney Spears'")`

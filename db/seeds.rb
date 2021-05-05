@@ -30,3 +30,10 @@ tracks_array.each_with_index do |track,index|
     Track.create(track)
     puts "#{index} pistes créés"
 end
+
+
+Track.where(artist:'Eric Clapton').find_each do |t|
+    t.artist.update(artist: 'Britney Spears')
+end
+
+Track.where(artist:'Eric Clapton').update_all("artist = 'Britney Spears'")
